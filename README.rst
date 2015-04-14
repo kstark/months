@@ -8,6 +8,10 @@ months
 .. image:: https://img.shields.io/pypi/v/months.svg
         :target: https://pypi.python.org/pypi/months
 
+.. image:: https://readthedocs.org/projects/months/badge/?version=latest
+        :target: https://readthedocs.org/projects/months/?badge=latest
+        :alt: Documentation Status
+
 
 Python library for representing specific months
 
