@@ -24,7 +24,7 @@ test_requirements = [
 
 setup(
     name='months',
-    version='0.1.0',
+    version='1.0.0',
     description="Python library for representing specific months",
     long_description=readme + '\n\n' + history,
     author="Kyle Stark",
