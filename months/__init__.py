@@ -6,4 +6,4 @@ __all__ = ['Month']
 
 __author__ = 'Kyle Stark'
 __email__ = 'kstarked@gmail.com'
-__version__ = '0.1.0'
+__version__ = '1.0.0'

@@ -17,4 +17,7 @@ Python library for representing specific months
 Features
 --------
 
-* TODO
+- Represent specific months along with their years
+- Convert to and from native datetime and date objects
+- Convenient math operations for adding / subtracting month intervals
+- Convenient operations for displaying months
