@@ -50,7 +50,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         >>> Month(2015, 4).full_display
         'April 2015'
         """
-        return "{} {}".format(self.month_name, self.year)
+        return "%s %d" % (self.month_name, self.year)
 
     @property
     def abbr_display(self):
@@ -60,7 +60,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         >>> Month(2015, 4).full_display
         'Apr 2015'
         """
-        return "{} {}".format(self.month_abbr, self.year)
+        return "%s %d" % (self.month_abbr, self.year)
 
     @classmethod
     def from_date(cls, date):
