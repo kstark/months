@@ -2,22 +2,80 @@
 from collections import namedtuple
 import calendar
 import datetime
+from functools import wraps
 
 
 def __utctoday():
-    """ Returns today's date in UTC time """
+    """Return today's date in UTC time."""
     return datetime.datetime.utcnow().date()
 
 
-class Month(namedtuple('Month', ['year', 'month'])):
-    """
-    Represents a specific month of a year
+def _get(other):
+    """Coerce an arbitrary object into a Month type.
 
-    Provides various utilites for generating, manipulating, and displaying
+    This is designed to be used in functions accepting arbitrary type
+    arguments in an *args situation, in which the value is expected to be
+    comparable to a Month.
+
+    Accepted types:
+
+    1. Month
+    2. Date / Datetime
+    3. Two-value tuples (in *args or as a single argument).
+    4. Single-value lists/tuples containing one of the above.
+
+    >>> __get((2018, 1))
+    Month(2018, 1)
+
+    """
+    # check for valid types, return if its easy
+    if isinstance(other, Month):
+        return other
+    if isinstance(other, (datetime.date, datetime.datetime)):
+        return Month.from_date(other)
+    elif not isinstance(other, (list, tuple)):
+        raise TypeError('Cannot coerce %s to Month.' % type(other))
+
+    # at this point other must be a list or tuple.
+    # if it only has one value then try to get the first value,
+    # it could be a valid type stuffed in *args.
+    #
+    # otherwise create from a two-value tuple
+    if len(other) == 1:
+        return _get(other[0])
+    elif len(other) == 2:
+        return Month(*other)
+    else:
+        raise ValueError(
+            'Cannot coerce list/tuple of length %d to Month.' % len(other)
+        )
+
+
+def _handle_other_decorator(func):
+    """Decorate functions to handle "other" Month-like arguments.
+
+    The arguments are assumed to be within *args, while only a single
+    value (the Month) is actually desired for the function's execution.
+    The __get function coerces the value to a month and passes it to the
+    decorated function.
+    """
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        return func(self, _get(args), **kwargs)
+
+    return wrapper
+
+
+class Month(namedtuple('Month', ['year', 'month'])):
+    """Represent a specific month of a year.
+
+    Provides various utilities for generating, manipulating, and displaying
     months.
     """
     def __repr__(self):
-        return "%s(%d, %d)" % (self.__class__.__name__, self.year, self.month)
+        return (
+            "%s(%d, %d)" % (self.__class__.__name__, self.year, self.month)
+        )
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m")
@@ -61,6 +119,36 @@ class Month(namedtuple('Month', ['year', 'month'])):
         'Apr 2015'
         """
         return "%s %d" % (self.month_abbr, self.year)
+
+    @property
+    def n_days(self):
+        """Return the number of days in the month.
+
+        >>> Month(2018, 1).n_days
+        31
+
+        Returns
+        -------
+        number : int
+            The number of days in the month.
+
+        """
+        return calendar.monthrange(self.year, self.month)[1]
+
+    @property
+    def dates(self):
+        """Return a tuple of all days in the month.
+
+        >>> Month(2018, 1).dates[:2]
+        (datetime.date(2018, 1, 1), datetime.date(2018, 1, 2))
+
+        Returns
+        -------
+        days : tuple
+            A tuple containing all the days in the month.
+
+        """
+        return tuple(map(self.nth, range(1, self.n_days + 1)))
 
     @classmethod
     def from_date(cls, date):
@@ -127,3 +215,98 @@ class Month(namedtuple('Month', ['year', 'month'])):
     def range(self):
         """ Returns a tuple of the first and last days of the month """
         return (self.start_date, self.end_date)
+
+    def nth(self, day: int):
+        """Get date object for nth day of month.
+
+        Accepts nonzero integer values between +- ``month.n_days``.
+
+        >>> Month(2018, 1).nth(1) == Month(2018, 1).start_date
+        True
+        >>> Month(2018, 1).nth(8)
+        datetime.date(2018, 1, 8)
+
+        >>> Month(2018, 1).nth(-2)
+        datetime.date(2018, 1, 30)
+
+        Parameters
+        ----------
+        day : int
+            Day of the month.
+
+        Returns
+        -------
+        date : datetime.date
+            Date object for the day of the month.
+
+        """
+        # validate param
+        if day == 0:
+            raise ValueError('Day of month must be nonzero!')
+        if abs(day) > self.n_days:
+            raise ValueError(
+                'Day of month must be within +- %s for %s!' %
+                (self.n_days, self.full_display)
+            )
+
+        if day < 0:
+            day = self.n_days + 1 + day
+        return datetime.date(self.year, self.month, day)
+
+    @_handle_other_decorator
+    def to(self, other):
+        """Generate a list of all months between two months, inclusively.
+
+        Accepts two-element lists/tuples, date-like objects, or Month objects.
+        If months are provided out of order (like ``june_18.to.march_18``) then
+        the list will also be in reverse order.
+
+        >>> Month(2018, 1).to(Month(2018, 2))
+        [Month(2018, 1), Month(2018, 2)]
+        >>> Month(2018, 3).to(2018, 1)
+        [Month(2018, 3), Month(2018, 2), Month(2018, 1)]
+
+        Parameters
+        ----------
+        other : Month, date, datetime, tuple
+            A Month-like object.
+
+        Returns
+        -------
+        months : list
+            List of months spanning the two objects, inclusively.
+
+        """
+
+        def walk(first, second):
+            """TODO: Something more efficient than iterative walking."""
+            assert first <= second
+            months = [first]
+            while months[-1] < second:
+                months.append(months[-1] + 1)
+            return months
+
+        if self >= other:
+            return walk(other, self)[::-1]
+        else:
+            return walk(self, other)
+
+    @_handle_other_decorator
+    def distance(self, other):
+        """Return the number of months distance between months.
+
+        This will always be a positive number. Accepts two-element lists/tuples
+        or Month objects.
+
+        >>> Month(2018, 1).distance(Month(2018, 12))
+        11
+        >>> Month(2018, 5).distance(2018, 1)
+        4
+
+        Returns
+        -------
+        n_months : int
+            Integer number of months distance.
+
+        """
+        return len(self.to(other)) - 1
