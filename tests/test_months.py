@@ -32,6 +32,12 @@ class TestMonths(unittest.TestCase):
     def test_str(self):
         self.assertEqual(str(self.month), '2015-04')
 
+    def test_int(self):
+        self.assertEqual(int(self.month), 201504)
+
+    def test_float(self):
+        self.assertEqual(float(self.month), 201504.0)
+
     def test_month_name(self):
         self.assertEqual(self.month.month_name, 'April')
 
@@ -112,6 +118,11 @@ class TestMonths(unittest.TestCase):
 
         other_dt = (self.month - d).nth(5)
         self.assertEqual(self.month.distance(other_dt), d)
+
+    def test_gregorian_number(self):
+        self.assertEqual(Month(1, 1).gregorian_month_number, 1)
+        self.assertEqual(Month(-1, 2).gregorian_month_number, -2)
+        self.assertEqual(Month(2, 2).gregorian_month_number, 14)
 
     def tearDown(self):
         pass

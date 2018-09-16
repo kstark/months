@@ -72,6 +72,14 @@ class Month(namedtuple('Month', ['year', 'month'])):
     Provides various utilities for generating, manipulating, and displaying
     months.
     """
+
+    def __init__(self, year, month):
+        """Validate params."""
+        if year == 0:
+            raise ValueError('Year 0 is not valid in the Gregorian calendar.')
+        if month < 1 or month > 12:
+            raise ValueError('Month number must be 1-12.')
+
     def __repr__(self):
         return (
             "%s(%d, %d)" % (self.__class__.__name__, self.year, self.month)
@@ -79,6 +87,12 @@ class Month(namedtuple('Month', ['year', 'month'])):
 
     def __str__(self):
         return self.start_date.strftime("%Y-%m")
+
+    def __int__(self):
+        return int(self.start_date.strftime("%Y%m"))
+
+    def __float__(self):
+        return float(int(self))
 
     @property
     def month_name(self):
@@ -134,6 +148,29 @@ class Month(namedtuple('Month', ['year', 'month'])):
 
         """
         return calendar.monthrange(self.year, self.month)[1]
+
+    @property
+    def gregorian_month_number(self):
+        """Return the number of months since year 0, month 0.
+
+        >>> Month(1, 1).gregorian_month_number
+        1
+        >>> Month(2, 2).gregorian_month_number
+        14
+        >>> Month(-1, 2).gregorian_month_number
+        -2
+
+
+        Returns
+        -------
+        number : int
+            The number of months since year 0, month 0.
+
+        """
+        if self.year > 0:
+            return (self.year - 1) * 12 + self.month
+        else:
+            return (self.year + 1) * 12 - self.month
 
     @property
     def dates(self):
@@ -309,4 +346,4 @@ class Month(namedtuple('Month', ['year', 'month'])):
             Integer number of months distance.
 
         """
-        return len(self.to(other)) - 1
+        return abs(self.gregorian_month_number - other.gregorian_month_number)
