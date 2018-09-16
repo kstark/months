@@ -175,12 +175,6 @@ class Month(namedtuple('Month', ['year', 'month'])):
 
         >>> Month(2018, 1).n_days
         31
-
-        Returns
-        -------
-        number : int
-            The number of days in the month.
-
         """
         return calendar.monthrange(self.year, self.month)[1]
 
@@ -197,12 +191,6 @@ class Month(namedtuple('Month', ['year', 'month'])):
         14
         >>> Month(-1, 2).gregorian_month_number
         -2
-
-        Returns
-        -------
-        number : int
-            The number of months since year 1, month 0.
-
         """
         if self.year > 0:
             return (self.year - 1) * 12 + self.month
@@ -215,18 +203,12 @@ class Month(namedtuple('Month', ['year', 'month'])):
 
         >>> Month(2018, 1).dates[:2]
         (datetime.date(2018, 1, 1), datetime.date(2018, 1, 2))
-
-        Returns
-        -------
-        days : tuple
-            A tuple containing all the days in the month.
-
         """
         return tuple(map(self.nth, range(1, self.n_days + 1)))
 
     @classmethod
     def from_date(cls, date):
-        """Return a Month instance from the given a date or datetime object.
+        """Return a Month instance from given a date or datetime object.
 
         Parameters
         ----------
@@ -400,6 +382,11 @@ class Month(namedtuple('Month', ['year', 'month'])):
         11
         >>> Month(2018, 5).distance(2018, 1)
         4
+
+        Parameters
+        ----------
+        other : Month, date, datetime, tuple
+            A Month-like object.
 
         Returns
         -------

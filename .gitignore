@@ -6,3 +6,4 @@ build/
 .venv
 venv
 *.egg-info
+_build
