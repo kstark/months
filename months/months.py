@@ -151,7 +151,10 @@ class Month(namedtuple('Month', ['year', 'month'])):
 
     @property
     def gregorian_month_number(self):
-        """Return the number of months since year 0, month 0.
+        """Return the number of months since the start of Gregorian year 1.
+
+        Year 0 and month 0 are invalid. So the first month of year 1 is 1, and
+        the first month of year -1 is -1.
 
         >>> Month(1, 1).gregorian_month_number
         1
@@ -164,7 +167,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         Returns
         -------
         number : int
-            The number of months since year 0, month 0.
+            The number of months since year 1, month 0.
 
         """
         if self.year > 0:
