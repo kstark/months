@@ -297,7 +297,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         """Return a tuple of the first and last days of the month."""
         return (self.start_date, self.end_date)
 
-    def nth(self, day: int):
+    def nth(self, day):
         """Get date object for nth day of month.
 
         Accepts nonzero integer values between +- ``month.n_days``.
@@ -321,6 +321,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
             Date object for the day of the month.
 
         """
+
         # validate param
         if day == 0:
             raise ValueError('Day of month must be nonzero!')
