@@ -26,12 +26,6 @@ class TestMonths(unittest.TestCase):
         self.date = self.datetime.date()
         self.month = Month(2015, 4)
 
-    def test_init(self):
-        with self.assertRaises(ValueError) as ctx:
-            Month(0, 1)
-        with self.assertRaises(ValueError) as ctx:
-            Month(1, 0)
-
     def test_repr(self):
         self.assertEqual(repr(self.month), 'Month(2015, 4)')
 
