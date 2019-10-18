@@ -16,7 +16,7 @@ History
    * ``month.nth(day)`` to return a specific day in the month.
 * ``__int__`` and ``__float__`` methods added.
    * Also a ``month.gregorian_month_number`` method to compute number of months
-   since year 0.
+     since year 0.
 
 1.1.0 (2019-10-18)
 ---------------------
