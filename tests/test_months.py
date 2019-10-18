@@ -57,7 +57,7 @@ class TestMonths(unittest.TestCase):
         self.assertEqual(self.month + 9, Month(2016, 1))
 
     def test_add_raises(self):
-        self.assertRaises(ValueError, self.month.__add__, 'not_an_int')
+        self.assertRaises(TypeError, self.month.__add__, 'not_an_int')
 
     def test_sub(self):
         self.assertEqual(self.month - 1, Month(2015, 3))
@@ -66,7 +66,7 @@ class TestMonths(unittest.TestCase):
         self.assertEqual(self.month - 4, Month(2014, 12))
 
     def test_sub_raises(self):
-        self.assertRaises(ValueError, self.month.__sub__, 'not_an_int')
+        self.assertRaises(TypeError, self.month.__sub__, 'not_an_int')
 
     def test_start_date(self):
         self.assertEqual(self.month.start_date, self.date.replace(day=1))

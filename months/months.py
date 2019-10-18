@@ -96,7 +96,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         Month(2016, 1)
         """
         if not isinstance(other, int):
-            raise ValueError("Only ints can be added to months")
+            raise TypeError("Only ints can be added to months")
 
         year_change, month = divmod(self.month + other - 1, 12)
         return type(self)(self.year + year_change, month + 1)
@@ -109,7 +109,7 @@ class Month(namedtuple('Month', ['year', 'month'])):
         Month(2014, 7)
         """
         if not isinstance(other, int):
-            raise ValueError("Only ints can be added to months")
+            raise TypeError("Only ints can be subtracted from months")
 
         return self + (-other)
 
