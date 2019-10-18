@@ -3,7 +3,7 @@
 History
 -------
 
-2.0.0 (2018-09-15)
+2.0.0 (2019-10-18)
 ---------------------
 
 * Thanks to nolanbconaway for their contributions!
@@ -14,7 +14,7 @@ History
    * ``month.n_days`` to return the number of days in the month.
    * ``month.dates`` to return a list of all days in the month.
    * ``month.nth(day)`` to return a specific day in the month.
-* ``__int__````__float__`` methods added.
+* ``__int__`` and ``__float__`` methods added.
    * Also a ``month.gregorian_month_number`` method to compute number of months
    since year 0.
 
