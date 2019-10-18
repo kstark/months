@@ -1,20 +1,46 @@
 language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "nightly"
-  - "pypy"
+
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
 script: make test
 
-deploy:
-  provider: pypi
-  user: "__token__"
-  on:
-      tags: true
+jobs:
+  fast_finish: true
+  include:
+    - name: Python 2.7
+      stage: test
+      python: "2.7"
+    - name: Python 3.4
+      stage: test
+      python: "3.4"
+    - name: Python 3.5
+      stage: test
+      python: "3.5"
+    - name: Python 3.6
+      stage: test
+      python: "3.6"
+    - name: Python 3.7
+      stage: test
+      python: "3.7"
+    - name: Python 3.8
+      stage: test
+      python: "3.8"
+    - name: Python nightly
+      stage: test
+      python: "nightly"
+    - name: Python pypy
+      stage: test
+      python: "pypy"
+    - name: Upload Python client
+      stage: release
+      if: tag =~ ^v
+      language: python
+      python: '3.7'
+      script: skip
+      deploy:
+        provider: pypi
+        user: "__token__"
+        skip_existing: true
+        on:
+            tags: true
