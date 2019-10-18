@@ -3,6 +3,21 @@
 History
 -------
 
+2.0.0 (2018-09-15)
+---------------------
+
+* Thanks to nolanbconaway for their contributions!
+* New methods to handle relations between months:
+   * ``month.to(other)`` for generating intervals of months.
+   * ``month.distance(other)`` for computing distance between months.
+* New methods for month date info
+   * ``month.n_days`` to return the number of days in the month.
+   * ``month.dates`` to return a list of all days in the month.
+   * ``month.nth(day)`` to return a specific day in the month.
+* ``__int__````__float__`` methods added.
+   * Also a ``month.gregorian_month_number`` method to compute number of months
+   since year 0.
+
 1.1.0 (2019-10-18)
 ---------------------
 
