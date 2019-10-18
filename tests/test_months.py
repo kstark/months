@@ -32,6 +32,12 @@ class TestMonths(unittest.TestCase):
     def test_str(self):
         self.assertEqual(str(self.month), '2015-04')
 
+    def test_int(self):
+        self.assertEqual(int(self.month), 201504)
+
+    def test_float(self):
+        self.assertEqual(float(self.month), 201504.0)
+
     def test_month_name(self):
         self.assertEqual(self.month.month_name, 'April')
 
@@ -78,6 +84,45 @@ class TestMonths(unittest.TestCase):
         self.assertEqual(
             self.month.range,
             (self.date.replace(day=1), self.date.replace(day=30)))
+
+    def test_dates(self):
+        self.assertEqual(self.month.dates[0], self.month.start_date)
+
+    def test_n_days(self):
+        self.assertEqual(self.month.n_days, len(self.month.dates))
+
+    def test_nth(self):
+        self.assertEqual(self.month.nth(-1), self.month.end_date)
+
+    def test_to(self):
+
+        other = self.month-1
+        self.assertEqual(self.month.to(other), [self.month, other])
+
+        other = (2004, 5)
+        self.assertEqual(self.month.to(*other)[-1], Month(*other))
+        self.assertEqual(self.month.to(other)[-1], Month(*other))
+
+        other = datetime.date(2004, 5, 10)
+        self.assertEqual(self.month.to(other)[-1], Month.from_date(other))
+
+    def test_distance(self):
+
+        d = 10
+        self.assertEqual(self.month.distance(self.month + d), d)
+        self.assertEqual(self.month.distance(self.month - d), d)
+
+        other_tup = ((self.month - d).year, (self.month - d).month)
+        self.assertEqual(self.month.distance(*other_tup), d)
+        self.assertEqual(self.month.distance(other_tup), d)
+
+        other_dt = (self.month - d).nth(5)
+        self.assertEqual(self.month.distance(other_dt), d)
+
+    def test_gregorian_number(self):
+        self.assertEqual(Month(1, 1).gregorian_month_number, 1)
+        self.assertEqual(Month(-1, 2).gregorian_month_number, -2)
+        self.assertEqual(Month(2, 2).gregorian_month_number, 14)
 
     def tearDown(self):
         pass
